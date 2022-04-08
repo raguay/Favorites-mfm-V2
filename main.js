@@ -153,22 +153,16 @@ var favorites = {
     }
   },
   getFavDirFile: async function() {
-    var fdir = await favorites.fs.appendPath(favorites.hdir, '.favoritedirs');
+    var fdir = await favorites.fs.appendPath(favorites.configdir, '.favoritedirs');
     if (! await favorites.fs.dirExists(fdir)) {
-      fdir = await favorites.fs.appendPath(favorites.configdir, '.favoritedirs');
-      if (! await favorites.fs.dirExists(fdir)) {
-        await favorites.fs.writeFile(fdir, "");
-      }
+      await favorites.fs.writeFile(fdir, "");
     }
     return (fdir);
   },
   getFavAliasFile: async function() {
-    var adir = await favorites.fs.appendPath(favorites.hdir, '.shortenerdirs');
+    var adir = await favorites.fs.appendPath(favorites.configdir, '.shortenerdirs');
     if (! await favorites.fs.dirExists(adir)) {
-      adir = await favorites.fs.appendPath(favorites.configdir, '.shortenerdirs');
-      if (! await favorites.fs.dirExists(adir)) {
-        await favorites.fs.writeFile(adir, "");
-      }
+      await favorites.fs.writeFile(adir, "");
     }
     return (adir);
   },
@@ -194,6 +188,7 @@ var favorites = {
   goToFavorite: async function() {
     var favdir = await favorites.getFavDirFile();
     favorites.getFavDir('Which Directory?', favdir, async (result) => {
+      if(typeof result.value !== "undefined") result = result.value;
       var path = await favorites.fs.normalize(result);
       var match = path.match(/\{\{(.*)\}\}/);
       if (match !== null) {
@@ -217,6 +212,7 @@ var favorites = {
     //
     var cursor = favorites.extMan.getExtCommand('getCursor').command();
     favorites.extMan.getExtCommand('askQuestion').command('Favorite Directory', 'What do you want to name this Favorite Directory?', async (result) => {
+      if(typeof result.value !== "undefined") result = result.value;
       var ndir = cursor.entry.dir.trim();
       //
       // Find all alias paths with an alias.
@@ -252,6 +248,8 @@ var favorites = {
     var cursor = favorites.extMan.getExtCommand('getCursor').command();
     favorites.extMan.getExtCommand('askQuestion').command('Favorite Directory', 'What do you want to name this Alias?', async (result) => {
       var ndir = cursor.entry.dir.trim();
+      if(typeof result.value !== "undefined") result = result.value;
+
       //
       // Find all alias paths with an alias.
       //
@@ -271,6 +269,7 @@ var favorites = {
   deleteFavorite: async function() {
     var favdir = await favorites.getFavDirFile();
     favorites.getFavDir("Which Favorite to Delete?", favdir, async (result) => {
+      if(typeof result.value !== "undefined") result = result.value;
       result = result.trim();
       var sdirs = await favorites.fs.readFile(favdir)
       sdirs = sdirs.split('\n');
@@ -281,6 +280,7 @@ var favorites = {
   deleteAlias: async function() {
     var alfile = await favorites.getFavDirFile();
     favorites.getFavDir("Which Alias to Delete?", alfile, async (result) => {
+      if(typeof result.value !== "undefined") result = result.value;
       result = result.trim();
       var sdirs = await favorites.fs.readFile(alfile)
       sdirs = sdirs.split('\n');
