@@ -13,7 +13,7 @@ var favorites = {
     favorites.hdir = await favorites.fs.getHomeDir();
     favorites.configdir = await favorites.extMan.getConfigDir();
     var addCommand = favorites.extMan.getCommands().addCommand;
-    addCommand('Go to Favorite Directory', 'favorites.gotToFavorite', 'Open a list of favorite directories to jump to.', favorites.goToFavorite);
+    addCommand('Go to Favorite Directory', 'favorites.goToFavorite', 'Open a list of favorite directories to jump to.', favorites.goToFavorite);
     addCommand('Make Favorite Directory', 'favorites.makeFavorite', 'Create a favorite directory.', favorites.makeFavorite);
     addCommand('Create Alias Directory', 'favorites.createAlias', 'Create a directory Alias', favorites.createAlias);
     addCommand('Delete Favorite Directory', 'favorites.deleteFavorite', 'Deletes a favorite directory assignment.', favorites.deleteFavorite);
@@ -114,6 +114,29 @@ var favorites = {
       favorites.saveDir(5);
       favorites.extMan.getExtCommand('changeMode').command('normal');
     });
+    newKeyboard('fav', false, false, false, 'z', () => {
+      favorites.popDir(1);
+      favorites.extMan.getExtCommand('changeMode').command('normal');
+    });
+    newKeyboard('fav', false, false, false, 'x', () => {
+      favorites.popDir(2);
+      favorites.extMan.getExtCommand('changeMode').command('normal');
+    });
+    newKeyboard('fav', false, false, false, 'c', () => {
+      favorites.popDir(3);
+      favorites.extMan.getExtCommand('changeMode').command('normal');
+    });
+    newKeyboard('fav', false, false, false, 'v', () => {
+      favorites.popDir(4);
+      favorites.extMan.getExtCommand('changeMode').command('normal');
+    });
+    newKeyboard('fav', false, false, false, 'b', () => {
+      favorites.popDir(5);
+      favorites.extMan.getExtCommand('changeMode').command('normal');
+    });
+    newKeyboard('fav', false, false, false, 'Escape', () => {
+      favorites.extMan.getExtCommand('changeMode').command('normal');
+    });
   },
   setFavMode: function() {
     favorites.extMan.getExtCommand('changeMode').command('fav');
@@ -154,14 +177,14 @@ var favorites = {
   },
   getFavDirFile: async function() {
     var fdir = await favorites.fs.appendPath(favorites.configdir, '.favoritedirs');
-    if (! await favorites.fs.dirExists(fdir)) {
+    if (! await favorites.fs.fileExists(fdir)) {
       await favorites.fs.writeFile(fdir, "");
     }
     return (fdir);
   },
   getFavAliasFile: async function() {
     var adir = await favorites.fs.appendPath(favorites.configdir, '.shortenerdirs');
-    if (! await favorites.fs.dirExists(adir)) {
+    if (! await favorites.fs.fileExists(adir)) {
       await favorites.fs.writeFile(adir, "");
     }
     return (adir);
